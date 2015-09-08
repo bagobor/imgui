@@ -1,10 +1,20 @@
 -- premake5.lua
 
-local BUILD_DIR = (".build/" .. _ACTION)
 
 workspace "imgui-samples"
    configurations { "Debug", "Release" }
+   platforms { "x32", "x64" }
+
+   filter "platforms:*64"
+      BUILD_DIR = (".build_x64/" .. _ACTION)
+
+   filter "platforms:*32"
+      BUILD_DIR = (".build/" .. _ACTION)
+
+   filter {}
+
    location (BUILD_DIR)
+   startproject "opengl3_example"
    -- platforms { "x32", "x64" }
 
    -- filter { "platforms:x32" }
@@ -61,15 +71,29 @@ project "opengl3_example"
       "../../"
    }
    
-   libdirs { BUILD_DIR .. "/lib/%{cfg.buildcfg}" }
-   links { 
-      "libimgui", 
-      "./examples/libs/glfw/lib-vc2010-32/glfw3.lib",
-      "opengl32"
-   }
+   
 
    files { 
       "./examples/opengl3_example/**.h", 
       "./examples/opengl3_example/**.cpp", 
-      "./examples/libs/gl3w/**.*" }
+      "./examples/libs/gl3w/**.*" 
+   }
+
+   libdirs { BUILD_DIR .. "/lib/%{cfg.buildcfg}" }
+
+   filter "platforms:*64"
+      links { 
+         "libimgui", 
+         "./examples/libs/glfw/lib-vc2010-64/glfw3.lib",
+         "opengl32"
+      }
+
+   filter "platforms:*32"
+      links { 
+         "libimgui", 
+         "./examples/libs/glfw/lib-vc2010-32/glfw3.lib",
+         "opengl32"
+      }
+
+
 
